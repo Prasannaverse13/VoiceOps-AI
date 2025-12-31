@@ -1,6 +1,6 @@
 
-const ELEVENLABS_API_KEY = 'sk_6eecd789ed7ba6c1c3f288906bf03d2efcebb11c4fec7fa9';
-const VOICE_ID = '2EiwWnXFnvU5JabPnv8n'; // "Clyde"
+const ELEVENLABS_API_KEY = 'ELEVENLABS_API_KEY';
+const VOICE_ID = 'ID'; // "Clyde"
 
 export async function speechToText(audioBlob: Blob): Promise<string> {
   try {
