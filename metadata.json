@@ -1,0 +1,7 @@
+{
+  "name": "VoiceOps AI",
+  "description": "A high-performance voice-controlled operations assistant for real-time infrastructure management and incident response.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
