@@ -29,13 +29,28 @@ In high-pressure incident response scenarios, the "cognitive load" of navigating
 - **ElevenLabs**:
   - **Scribe (v1)**: High-accuracy technical speech-to-text.
   - **TTS (Turbo v2.5)**: Low-latency, lifelike voice synthesis for mission-critical feedback.
-- **Frontend**:
-  - **React (v19)**: Tactical HUD for visual telemetry confirmation.
-  - **Tailwind CSS**: "Liquid Glass" aesthetic for high-density engineering data.
 
 ---
 
-## 5. System Architecture
+## 5. Implementation Reference
+Detailed mapping of hackathon-required technologies to the project source code:
+
+### Google Cloud Platform (GCP)
+| Component | Implementation File | Role in Project |
+| :--- | :--- | :--- |
+| **Vertex AI / Gemini 3 Flash** | `services/geminiService.ts` | Reasoning engine, tool definitions, and voice-optimized system instructions. Orchestrated in `App.tsx`. |
+| **Cloud Run** | `App.tsx` | The application interfaces with the `SYSTEM_STATUS_API` endpoint (deployed on Cloud Run) to fetch live infrastructure telemetry. |
+| **Firestore** | `types.ts` & `App.tsx` | The `SystemStatus` interface defines the "Digital Twin" schema, which is mirrored in Firestore for real-time dashboard updates. |
+
+### ElevenLabs
+| Component | Implementation File | Role in Project |
+| :--- | :--- | :--- |
+| **Scribe (v1)** | `services/elevenLabsService.ts` | Handled by the `speechToText` function. Provides high-precision technical transcription of SRE commands. |
+| **TTS (Turbo v2.5)** | `services/elevenLabsService.ts` | Handled by the `textToSpeech` function using the `eleven_turbo_v2_5` model for ultra-low latency vocal feedback. |
+
+---
+
+## 6. System Architecture
 
 The end-to-end flow follows a deterministic "Voice-to-Action" pipeline:
 
@@ -54,7 +69,7 @@ flowchart TD
 
 ---
 
-## 6. Data Model (Google Cloud Firestore)
+## 7. Data Model (Google Cloud Firestore)
 We utilize a **Digital Twin** concept where Firestore stores the "Source of Truth" for the infrastructure state.
 
 **Document: `system/telemetry`**
@@ -68,7 +83,7 @@ This model allows the AI to stay grounded in reality without hallucinating syste
 
 ---
 
-## 7. Backend Implementation (Cloud Run)
+## 8. Backend Implementation (Cloud Run)
 The backend is a stateless HTTP service deployed to **Cloud Run**.
 - **Role**: Serves as the interface between the AI's "intent" and the actual cloud environment.
 - **Execution**: When Gemini triggers `runHealthCheck`, the Cloud Run function queries live metrics and updates the Firestore Digital Twin.
@@ -76,7 +91,7 @@ The backend is a stateless HTTP service deployed to **Cloud Run**.
 
 ---
 
-## 8. AI Reasoning Layer (Gemini)
+## 9. AI Reasoning Layer (Gemini)
 Gemini 3 Flash is specifically tuned via **System Instructions** to act as a Senior SRE.
 - **Grounding**: Gemini is forbidden from guessing health; it must use tool calls to verify data via Cloud Run.
 - **Voice Optimization**: The model is instructed to provide high-density, ultra-concise responses suitable for spoken delivery (no markdown tables, pure verbal logic).
@@ -84,7 +99,7 @@ Gemini 3 Flash is specifically tuned via **System Instructions** to act as a Sen
 
 ---
 
-## 9. Voice Layer (ElevenLabs)
+## 10. Voice Layer (ElevenLabs)
 **ElevenLabs** provides the "soul" of the assistant.
 - **Integration**: We use the ElevenLabs API for both Scribe (Transcription) and TTS (Synthesis).
 - **Voice Design**: Selected the "Clyde" voice for its calm, professional, and clear tone—essential for high-stress SRE environments.
@@ -92,7 +107,7 @@ Gemini 3 Flash is specifically tuned via **System Instructions** to act as a Sen
 
 ---
 
-## 10. Computer Use via Voice
+## 11. Computer Use via Voice
 "Computer Use" in VoiceOps AI refers to the AI's ability to manipulate the system state through voice-triggered synthetic actions.
 - **Mechanism**: The operator says "Reboot the frontend nodes." Gemini interprets this as `performAutomatedAction(task: "node_reboot")`.
 - **Safety**: Actions are grounded in deterministic functions. The AI does *not* have direct shell access; it executes predefined operational scripts hosted on Cloud Run.
@@ -100,7 +115,7 @@ Gemini 3 Flash is specifically tuned via **System Instructions** to act as a Sen
 
 ---
 
-## 11. Repository Structure
+## 12. Repository Structure
 ```bash
 /             # Project root
 ├── components/   # React HUD components (Orb, CommandScreen, etc.)
@@ -116,7 +131,7 @@ Gemini 3 Flash is specifically tuned via **System Instructions** to act as a Sen
 
 ---
 
-## 12. Setup & Installation
+## 13. Setup & Installation
 1. **Google Cloud**:
    - Create a project and enable **Vertex AI API**.
    - Set up a **Firestore** database in Native mode.
@@ -130,7 +145,7 @@ Gemini 3 Flash is specifically tuned via **System Instructions** to act as a Sen
 
 ---
 
-## 13. How to Use
+## 14. How to Use
 1. **Initiate Control**: Click "Initiate Control" on the landing page.
 2. **Voice Bridge**: Click the microphone icon to open the bridge.
 3. **Commands**:
@@ -141,14 +156,14 @@ Gemini 3 Flash is specifically tuned via **System Instructions** to act as a Sen
 
 ---
 
-## 14. Demo Scenarios
+## 15. Demo Scenarios
 - **The Healthy Baseline**: AI reports "Nominal" health with low latency.
 - **The Active Incident**: Ask "Is everything okay?". AI detects a (simulated) error spike, opens the Incident Summary HUD, and narrates the root cause.
 - **Automated Remediation**: Tell the AI to "Run a health check and fix any issues." Watch it execute a multi-step remediation script in the terminal view.
 
 ---
 
-## 15. Hackathon Alignment
+## 16. Hackathon Alignment
 This project specifically targets the **ElevenLabs Challenge**:
 - **Conversational**: The interaction is 100% speech-driven.
 - **Intelligent**: Gemini provides deep architectural reasoning, not just scripted responses.
@@ -156,15 +171,15 @@ This project specifically targets the **ElevenLabs Challenge**:
 
 ---
 
-## 16. Future Enhancements
+## 17. Future Enhancements
 - **Multi-Agent Swarms**: Separate agents for "Network," "Database," and "Security."
 - **Real GCP Monitoring**: Integrating with `google.cloud.monitoring` for live production telemetry.
 - **Biometric Voice Lock**: Using ElevenLabs' voice fingerprinting to ensure only authorized SREs can trigger critical actions.
 
 ---
 
-## 17. Open Source License
+## 18. Open Source License
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ---
-*Built for AI Partner Catalyst: Accelerate Innovation.*
+*Built for the ElevenLabs x Google Cloud Hackathon 2025.*
